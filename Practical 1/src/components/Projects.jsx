@@ -1,43 +1,157 @@
+import { useState, useEffect, useCallback } from 'react'
+
+// You can change your GitHub username here to show your own repositories
+const GITHUB_USERNAME = 'Vaghasiya-Jemit-kanaiyalal'
+
+function Spinner() {
+  return (
+    <div className="spinner-container">
+      <div className="loading-spinner"></div>
+      <p>Fetching repositories from GitHub...</p>
+    </div>
+  )
+}
+
+function ErrorMessage({ message, onRetry }) {
+  return (
+    <div className="repo-error-message">
+      <p>⚠️ Error: {message}</p>
+      <button onClick={onRetry} className="retry-btn">
+        Retry
+      </button>
+    </div>
+  )
+}
+
+function RepoList({ data }) {
+  return (
+    <div className="projects-grid">
+      {data.map((repo) => (
+        <div key={repo.id} className="project-card">
+          <div className="project-header">
+            <h3>
+              <a
+                href={repo.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="project-title-link"
+              >
+                {repo.name.replace(/-/g, ' ').replace(/_/g, ' ')}
+              </a>
+            </h3>
+          </div>
+
+          <p className="project-desc">
+            {repo.description || 'No description provided for this repository.'}
+          </p>
+
+          <div className="project-meta">
+            {repo.language && (
+              <span className="tech-badge language-badge">{repo.language}</span>
+            )}
+            <div className="repo-stats">
+              <span title="Stars">⭐ {repo.stargazers_count}</span>
+              <span title="Forks">🍴 {repo.forks_count}</span>
+            </div>
+          </div>
+
+          <div className="project-footer">
+            <a
+              href={repo.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="view-repo-btn"
+            >
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function Projects() {
-  const projectList = [
-    {
-      id: 1,
-      title: 'Car dealership',
-      description: 'Responsive Toyota car dealership website with 3D car model viewing and a connected database for managing cars, bookings, and customer enquiries.',
-      tech: ['React', 'Node.js', 'MongoDB', 'CSS3']
-    },
-    {
-      id: 2,
-      title: 'DataForge',
-      description: 'DataForge is an intelligent AutoML platform designed to simplify the complete machine learning workflow. The platform enables users to upload datasets, perform interactive preprocessing, and train multiple machine learning models with a single click through an intuitive UI. It automates tasks such as missing value handling, encoding, scaling, feature selection, and model training while still allowing workflow customization and preprocessing control. Built with a scalable microservice architecture using Redis and BullMQ, DataForge supports asynchronous task execution, workflow orchestration, and model performance analysis through detailed reports and evaluation metrics.',
-      tech: ['Python', 'Machine Learning', 'Redis', 'Express.js']
-    },
-    {
-      id: 3,
-      title: 'AI Chat Assistant',
-      description: 'An AI-powered scholarship recommendation platform that analyzes a student\'s profile to suggest the most suitable scholarships, eliminating the need to surf multiple websites and helping students save time while never missing financial opportunities ',
-      tech: ['React', 'AI/ML', 'JavaScript', 'Node.js']
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const fetchRepos = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const response = await fetch(
+        `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`
+      )
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error(`GitHub user "${GITHUB_USERNAME}" not found.`)
+        } else if (response.status === 403) {
+          throw new Error('API rate limit exceeded. Please try again later.')
+        } else {
+          throw new Error(`Failed to fetch repositories (Status ${response.status}).`)
+        }
+      }
+
+      const repos = await response.json()
+      setData(repos)
+    } catch (err) {
+      setError(err.message || 'An error occurred while fetching repositories.')
+    } finally {
+      setLoading(false)
     }
-  ]
+  }, [])
+
+  useEffect(() => {
+    fetchRepos()
+  }, [fetchRepos])
+
+  const filteredData = data.filter((repo) => {
+    const query = searchQuery.toLowerCase()
+    const nameMatch = repo.name?.toLowerCase().includes(query)
+    const descMatch = repo.description?.toLowerCase().includes(query)
+    const langMatch = repo.language?.toLowerCase().includes(query)
+    return nameMatch || descMatch || langMatch
+  })
 
   return (
     <div className="projects-container">
       <h2>My Projects</h2>
-      <div className="projects-grid">
-        {projectList.map((project) => (
-          <div key={project.id} className="project-card">
-            <h3>{project.title}</h3>
-            <p>{project.description}</p>
-            <div className="project-tech">
-              {project.tech.map((t, idx) => (
-                <span key={idx} className="tech-badge">{t}</span>
-              ))}
-            </div>
-          </div>
-        ))}
+
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search repositories by name, description, or language..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-input"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="search-clear-btn"
+            title="Clear search"
+          >
+            &times;
+          </button>
+        )}
       </div>
+
+      {loading && <Spinner />}
+      {!loading && error && <ErrorMessage message={error} onRetry={fetchRepos} />}
+      {!loading && !error && <RepoList data={filteredData} />}
+
+      {!loading && !error && filteredData.length === 0 && (
+        <div className="no-repos-found">
+          <p>No repositories found matching "{searchQuery}".</p>
+        </div>
+      )}
     </div>
   )
 }
 
 export default Projects
+

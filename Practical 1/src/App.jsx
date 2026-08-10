@@ -35,6 +35,7 @@ function App() {
       </nav>
 
       <main className="main-content">
+        
         <Routes>
           <Route path="/" element={<Home bio={portfolio.bio} education={portfolio.education} skills={portfolio.skills} />} />
           <Route path="/projects" element={<Projects />} />
