@@ -1,0 +1,42 @@
+### 1. READ ALL TASKS (GET)
+GET http://localhost:3000/api/tasks
+Accept: application/json
+
+###
+
+### 2. CREATE A TASK (POST)
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Learn Mongoose",
+  "description": "Connect Express to MongoDB"
+}
+
+###
+
+### 3. VALIDATION ERROR TEST (POST - Missing Title)
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{
+  "description": "This should fail because there is no title."
+}
+
+###
+
+### 4. UPDATE A TASK (PUT)
+# Replace <REPLACE_WITH_TASK_ID> with an ID from the GET request above.
+PUT http://localhost:3000/api/tasks/<REPLACE_WITH_TASK_ID>
+Content-Type: application/json
+
+{
+  "completed": true,
+  "description": "Connect Express to MongoDB - Updated!"
+}
+
+###
+
+### 5. DELETE A TASK (DELETE)
+# Replace <REPLACE_WITH_TASK_ID> with an ID from the GET request above.
+DELETE http://localhost:3000/api/tasks/<REPLACE_WITH_TASK_ID>
