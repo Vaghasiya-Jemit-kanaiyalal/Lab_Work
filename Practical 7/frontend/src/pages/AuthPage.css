@@ -1,0 +1,232 @@
+/* AuthPage.css - Pixel & Retro Gaming Aesthetic */
+
+.auth-container {
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #FAF6ED;
+  background-image: 
+    radial-gradient(#d2c5ed 1px, transparent 1px),
+    radial-gradient(#d2c5ed 1px, #FAF6ED 1px);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.auth-card {
+  background-color: #FCF8F2;
+  border: 4px solid #6741d9;
+  border-radius: 16px;
+  width: 440px;
+  max-width: 95vw;
+  padding: 32px 28px;
+  box-shadow: 0 12px 30px rgba(103, 65, 217, 0.2), 0 4px 0 #361782;
+  position: relative;
+  overflow: hidden;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.auth-logo-icon {
+  font-size: 36px;
+}
+
+.auth-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 18px;
+  color: #2b1c50;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.auth-subtitle {
+  color: #6B7280;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-divider {
+  border-top: 2px dashed #d2c5ed;
+  margin: 20px 0 24px 0;
+  position: relative;
+}
+
+.auth-divider::after {
+  content: '✦';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #6741d9;
+  background: #FCF8F2;
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+.auth-error-badge {
+  background-color: #fee2e2;
+  border: 2px solid #ef4444;
+  color: #991b1b;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.auth-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-label {
+  font-weight: 800;
+  color: #2b1c50;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 16px;
+  color: #6741d9;
+  pointer-events: none;
+}
+
+.auth-input {
+  width: 100%;
+  background: #FFFFFF;
+  border: 2px solid #b8a5db;
+  border-radius: 8px;
+  padding: 12px 12px 12px 38px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: #2b1c50;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.auth-input:focus {
+  border-color: #6741d9;
+  box-shadow: 0 0 0 3px rgba(103, 65, 217, 0.15);
+}
+
+.auth-submit-btn {
+  background: #5027b5;
+  border: 2px solid #361782;
+  color: white;
+  padding: 14px;
+  border-radius: 10px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.15s ease;
+  box-shadow: 0 5px 0 #361782;
+  margin-top: 8px;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+  background: #6741d9;
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 #361782;
+}
+
+.auth-submit-btn:active:not(:disabled) {
+  transform: translateY(5px);
+  box-shadow: 0 0 0 #361782;
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.auth-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6B7280;
+}
+
+.auth-toggle-link {
+  color: #6741d9;
+  text-decoration: none;
+  font-weight: 800;
+  margin-left: 6px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.auth-toggle-link:hover {
+  color: #361782;
+  text-decoration: underline;
+}
+
+.auth-badge {
+  display: inline-block;
+  background-color: #ede9f6;
+  border: 1.5px solid #d2c5ed;
+  color: #6741d9;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: 'Press Start 2P', cursive;
+}
