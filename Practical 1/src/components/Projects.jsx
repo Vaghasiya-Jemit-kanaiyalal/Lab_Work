@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
 
-
 const GITHUB_USERNAME = 'Vaghasiya-Jemit-kanaiyalal'
 
 function Spinner() {
@@ -23,50 +22,65 @@ function ErrorMessage({ message, onRetry }) {
   )
 }
 
+function getLanguageClass(language) {
+  if (!language) return ''
+  const lang = language.toLowerCase()
+  if (lang.includes('script') || lang === 'js' || lang === 'ts') return 'js'
+  if (lang.includes('python')) return 'python'
+  if (lang.includes('c++') || lang.includes('cpp') || lang.includes('c#')) return 'cpp'
+  if (lang.includes('html') || lang.includes('css')) return 'html'
+  return ''
+}
+
 function RepoList({ data }) {
   return (
     <div className="projects-grid">
-      {data.map((repo) => (
-        <div key={repo.id} className="project-card">
-          <div className="project-header">
-            <h3>
+      {data.map((repo) => {
+        const langClass = getLanguageClass(repo.language)
+        return (
+          <div key={repo.id} className="project-card">
+            <div className="project-header">
+              <h3>
+                <a
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="project-title-link"
+                >
+                  {repo.name.replace(/-/g, ' ').replace(/_/g, ' ')}
+                </a>
+              </h3>
+            </div>
+
+            <p className="project-desc">
+              {repo.description || 'No description provided for this repository.'}
+            </p>
+
+            <div className="project-meta">
+              {repo.language ? (
+                <span className={`tech-badge ${langClass}`}>{repo.language}</span>
+              ) : (
+                <span className="tech-badge">Code</span>
+              )}
+              <div className="repo-stats">
+                <span title="Stars">⭐ {repo.stargazers_count}</span>
+                <span title="Forks">🍴 {repo.forks_count}</span>
+              </div>
+            </div>
+
+            <div className="project-footer">
               <a
                 href={repo.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="project-title-link"
+                className="view-repo-btn"
               >
-                {repo.name.replace(/-/g, ' ').replace(/_/g, ' ')}
+                View on GitHub →
               </a>
-            </h3>
-          </div>
-
-          <p className="project-desc">
-            {repo.description || 'No description provided for this repository.'}
-          </p>
-
-          <div className="project-meta">
-            {repo.language && (
-              <span className="tech-badge language-badge">{repo.language}</span>
-            )}
-            <div className="repo-stats">
-              <span title="Stars">⭐ {repo.stargazers_count}</span>
-              <span title="Forks">🍴 {repo.forks_count}</span>
             </div>
           </div>
-
-          <div className="project-footer">
-            <a
-              href={repo.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="view-repo-btn"
-            >
-              View on GitHub
-            </a>
-          </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
@@ -106,8 +120,40 @@ function Projects() {
   }, [])
 
   useEffect(() => {
-    fetchRepos()
-  }, [fetchRepos])
+    let ignore = false
+    async function load() {
+      try {
+        const response = await fetch(
+          `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`
+        )
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error(`GitHub user "${GITHUB_USERNAME}" not found.`)
+          } else if (response.status === 403) {
+            throw new Error('API rate limit exceeded. Please try again later.')
+          } else {
+            throw new Error(`Failed to fetch repositories (Status ${response.status}).`)
+          }
+        }
+        const repos = await response.json()
+        if (!ignore) {
+          setData(repos)
+        }
+      } catch (err) {
+        if (!ignore) {
+          setError(err.message || 'An error occurred while fetching repositories.')
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false)
+        }
+      }
+    }
+    load()
+    return () => {
+      ignore = true
+    }
+  }, [])
 
   const filteredData = data.filter((repo) => {
     const query = searchQuery.toLowerCase()
@@ -119,12 +165,12 @@ function Projects() {
 
   return (
     <div className="projects-container">
-      <h2>My Projects</h2>
+      <h2 className="section-heading">Featured Projects & Repositories</h2>
 
       <div className="search-container">
         <input
           type="text"
-          placeholder="Search repositories by name, description, or language..."
+          placeholder="Search projects by name, description, or tech..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="search-input"
@@ -154,4 +200,3 @@ function Projects() {
 }
 
 export default Projects
-

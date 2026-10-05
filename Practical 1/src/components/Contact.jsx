@@ -1,5 +1,3 @@
-import React from 'react'
-
 function Contact() {
   const emailPlaceholder = 'jemitvaghasiya07@gmail.com'
   const linkedinPlaceholder = 'https://www.linkedin.com/in/jemitvaghasiya/'
@@ -11,7 +9,10 @@ function Contact() {
 
   return (
     <div className="contact-info">
-      <h3>Contact Me</h3>
+      <h2 className="section-heading">Get In Touch</h2>
+      <p className="contact-subtitle">
+        Feel free to reach out for collaborations, project inquiries, or software engineering opportunities.
+      </p>
 
       <div className="contact-buttons">
         <button
@@ -19,7 +20,8 @@ function Contact() {
           className="btn email-btn"
           onClick={() => openLink(`mailto:${emailPlaceholder}`)}
         >
-          Email me
+          <span>✉️</span>
+          <span>Email Me</span>
         </button>
 
         <button
@@ -27,7 +29,8 @@ function Contact() {
           className="btn linkedin-btn"
           onClick={() => openLink(linkedinPlaceholder)}
         >
-          LinkedIn
+          <span>💼</span>
+          <span>LinkedIn</span>
         </button>
 
         <button
@@ -35,7 +38,8 @@ function Contact() {
           className="btn message-btn"
           onClick={() => openLink(messagePlaceholder)}
         >
-          Message me
+          <span>💬</span>
+          <span>Message Me</span>
         </button>
       </div>
     </div>
