@@ -27,6 +27,20 @@ app.use(express.json());
 // Request logging middleware
 app.use(requestLogger);
 
+// Root / Health Check Route
+app.get(['/', '/api'], (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Task Management Backend API is running in Docker!',
+    version: '1.0.0',
+    endpoints: {
+      tasks: '/api/tasks',
+      notifications: '/api/notifications',
+      auth: '/api/auth'
+    }
+  });
+});
+
 // Auth Routes
 app.use('/api/auth', authRoutes);
 app.post('/api/register', validateRegister, registerUser);
