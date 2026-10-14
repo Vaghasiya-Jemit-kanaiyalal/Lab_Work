@@ -8,11 +8,15 @@ import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import { registerUser, loginUser } from './controllers/authController.js';
 import { validateRegister, validateLogin } from './middlewares/validationMiddleware.js';
+import { initNotificationListener, notificationHistory } from './listeners/notificationListener.js';
 
 dotenv.config();
 
 // Connect to MongoDB
 connectDB();
+
+// Initialize Event-Driven Background Notification Listener
+initNotificationListener();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +36,15 @@ app.post('/login', validateLogin, loginUser);
 
 // Task Routes (Protected by Auth Middleware inside taskRoutes)
 app.use('/api/tasks', taskRoutes);
+app.use('/tasks', taskRoutes);
+
+// Notification History Routes
+app.get(['/api/notifications', '/notifications'], (req, res) => {
+  res.status(200).json({
+    total: notificationHistory.length,
+    notifications: notificationHistory,
+  });
+});
 
 // Global error handling middleware
 app.use(globalErrorHandler);
