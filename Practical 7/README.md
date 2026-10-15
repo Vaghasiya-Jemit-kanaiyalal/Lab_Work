@@ -1,18 +1,71 @@
-# React + Vite
+# Task Management Application - Automated CI/CD Pipeline
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+![CI/CD Pipeline](https://github.com/Vaghasiya-Jemit-kanaiyalal/Lab_Work/actions/workflows/ci.yml/badge.svg)
+![Node.js](https://img.shields.io/badge/Node.js-20.x-green.svg)
+![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue.svg)
+![Backend](https://img.shields.io/badge/Backend-Express.js-black.svg)
+![Tests](https://img.shields.io/badge/Tests-Passing%20(9%2F9)-brightgreen.svg)
 
-Currently, two official plugins are available:
+An automated Continuous Integration and Continuous Deployment (CI/CD) pipeline built with **GitHub Actions** for the full-stack Task Management application.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Automated Workflow on Push**: GitHub Actions triggers automatically on every push to the `main` branch.
+- **Dependency Installation**: Defined `npm install` steps for both Backend and Frontend.
+- **Automated Unit Testing**: Runs automated unit tests via `npm test` (`node:test`) covering:
+  - Task input validation middleware
+  - Authentication validation middleware
+  - In-memory caching system (`node-cache`)
+- **Automated Frontend Build**: Compiles Vite + React production bundle (`npm run build`).
+- **Continuous Deployment (CD)**: Automatically deploys application only if all tests and builds pass.
+- **Demonstrated Failure & Recovery**: Complete live demonstration of pipeline breaking on faulty code and recovering when corrected.
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## 📊 CI/CD Workflow Summary
 
-Heleo
+| Workflow Step | Command | Status |
+| :--- | :--- | :--- |
+| **1. Checkout Repository** | `actions/checkout@v4` | ✅ Automated |
+| **2. Node.js Setup** | `actions/setup-node@v4 (v20)` | ✅ Automated |
+| **3. Install Backend Dependencies** | `npm install` | ✅ Passed |
+| **4. Run Automated Backend Tests** | `npm test` | ✅ Passed (9/9) |
+| **5. Install Frontend Dependencies** | `npm install` | ✅ Passed |
+| **6. Build Production Frontend** | `npm run build` | ✅ Passed |
+| **7. Continuous Deployment (CD)** | Automated deployment stage | 🚀 Executed |
+
+---
+
+## 🧪 Live Demonstrations
+
+Detailed documentation and test logs: **[CI_CD_DOCUMENTATION.md](./CI_CD_DOCUMENTATION.md)**
+
+1. **Deliberately Broken Test (Failed Pipeline)**:
+   - **Commit**: `a959016`
+   - **GitHub Actions Run**: [View Failed Run #38688670220](https://github.com/Vaghasiya-Jemit-kanaiyalal/Lab_Work/actions/runs/38688670220)
+   - **Result**: Pipeline halted at test step with clear failure report; deployment blocked.
+
+2. **Corrected Test (Passing Pipeline)**:
+   - **Commit**: `186207f`
+   - **GitHub Actions Run**: [View Passing Run #38688815914](https://github.com/Vaghasiya-Jemit-kanaiyalal/Lab_Work/actions/runs/38688815914)
+   - **Result**: All 9 unit tests passed; frontend built; automated deployment completed successfully.
+
+---
+
+## 🛠️ Local Development & Testing
+
+### Running Tests Locally
+```bash
+cd backend
+npm install
+npm test
+```
+
+### Building Frontend Locally
+```bash
+cd frontend
+npm install
+npm run build
+```
