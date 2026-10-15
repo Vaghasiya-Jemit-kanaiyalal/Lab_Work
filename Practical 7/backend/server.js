@@ -6,6 +6,7 @@ import { requestLogger } from './middlewares/logger.js';
 import { globalErrorHandler } from './middlewares/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 import { registerUser, loginUser } from './controllers/authController.js';
 import { validateRegister, validateLogin } from './middlewares/validationMiddleware.js';
 import { initNotificationListener, notificationHistory } from './listeners/notificationListener.js';
@@ -36,10 +37,14 @@ app.get(['/', '/api'], (req, res) => {
     endpoints: {
       tasks: '/api/tasks',
       notifications: '/api/notifications',
-      auth: '/api/auth'
+      auth: '/api/auth',
+      ai: '/api/ai/generate-description'
     }
   });
 });
+
+// AI-Powered Assistant Routes
+app.use('/api/ai', aiRoutes);
 
 // Auth Routes
 app.use('/api/auth', authRoutes);

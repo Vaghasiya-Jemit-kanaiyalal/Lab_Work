@@ -1,6 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { validateTask, validateRegister, validateLogin } from '../middlewares/validationMiddleware.js';
+import { generateFallbackTaskInfo, generateTaskDescription } from '../controllers/aiController.js';
 import cache from '../cache.js';
 
 describe('Task Management Application - Automated Test Suite', () => {
@@ -162,6 +163,60 @@ describe('Task Management Application - Automated Test Suite', () => {
       cache.del(cacheKey);
       const afterDelete = cache.get(cacheKey);
       assert.strictEqual(afterDelete, undefined, 'Deleted cache key should return undefined');
+    });
+  });
+
+  describe('AI-Powered Assistant & Responsible AI Subsystem', () => {
+    it('should reject AI description request when title is missing', async () => {
+      let statusCode = null;
+      let responseBody = null;
+      const req = { body: { title: '' } };
+      const res = {
+        status(code) {
+          statusCode = code;
+          return { json(data) { responseBody = data; } };
+        }
+      };
+
+      await generateTaskDescription(req, res);
+
+      assert.strictEqual(statusCode, 400);
+      assert.strictEqual(responseBody?.success, false);
+      assert.strictEqual(responseBody?.error, 'Task title is required to generate AI suggestions.');
+    });
+
+    it('should generate intelligent fallback task description and priority based on keywords', () => {
+      const urgentResult = generateFallbackTaskInfo('Critical production bug crash in auth system');
+      assert.strictEqual(urgentResult.suggestedPriority, 'urgent');
+      assert.strictEqual(urgentResult.isFallback, true);
+      assert.ok(urgentResult.description.length > 20);
+
+      const lowResult = generateFallbackTaskInfo('Read documentation on docker volumes');
+      assert.strictEqual(lowResult.suggestedPriority, 'low');
+      assert.strictEqual(lowResult.isFallback, true);
+    });
+
+    it('should gracefully degrade and provide proposal without throwing when external API key is absent', async () => {
+      let statusCode = null;
+      let responseBody = null;
+      const req = { body: { title: 'Prepare AWDF Lab Evaluation Presentation' } };
+      const res = {
+        status(code) {
+          statusCode = code;
+          return { json(data) { responseBody = data; } };
+        }
+      };
+
+      await generateTaskDescription(req, res);
+
+      assert.strictEqual(statusCode, 200);
+      assert.strictEqual(responseBody?.success, true);
+      assert.ok(responseBody?.description);
+      assert.ok(responseBody?.suggestedPriority);
+      // Responsible AI: verify private keys are NEVER leaked to the client
+      assert.strictEqual(responseBody?.apiKey, undefined);
+      assert.strictEqual(responseBody?.GEMINI_API_KEY, undefined);
+      assert.strictEqual(responseBody?.OPENAI_API_KEY, undefined);
     });
   });
 
