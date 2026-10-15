@@ -8,6 +8,8 @@
  * - Provides graceful fallback on network timeout, quota errors, or missing keys
  */
 
+import dotenv from 'dotenv';
+
 /**
  * Intelligent Rule-Based Fallback Generator
  * Generates structured task descriptions and priority suggestions when external AI is unavailable.
@@ -190,6 +192,7 @@ Respond strictly with valid JSON only in this exact format:
  * Returns { success: true, description, suggestedPriority, suggestedDays, isFallback, provider }
  */
 export const generateTaskDescription = async (req, res) => {
+  dotenv.config();
   const { title } = req.body || {};
 
   if (!title || typeof title !== 'string' || !title.trim()) {
@@ -254,6 +257,7 @@ export const generateTaskDescription = async (req, res) => {
  * Informs frontend about AI service readiness without exposing keys
  */
 export const getAiServiceStatus = (req, res) => {
+  dotenv.config();
   const hasGemini = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here');
   const hasOpenAi = Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_openai_api_key_here');
 
