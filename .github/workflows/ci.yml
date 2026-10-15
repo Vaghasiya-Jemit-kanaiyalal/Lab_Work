@@ -1,0 +1,89 @@
+name: Task Management CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test-and-build:
+    name: Build and Test Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Set up Node.js Environment (v20)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 📦 Install Backend Dependencies (npm install)
+        run: |
+          echo "==============================================="
+          echo "📦 STEP 1: Installing Backend Dependencies"
+          echo "==============================================="
+          if [ -d "Practical 7/backend" ]; then
+            cd "Practical 7/backend"
+          else
+            cd backend
+          fi
+          npm install
+
+      - name: 🧪 Run Automated Backend Unit Tests (npm test)
+        run: |
+          echo "==============================================="
+          echo "🧪 STEP 2: Running Automated Unit Tests"
+          echo "==============================================="
+          if [ -d "Practical 7/backend" ]; then
+            cd "Practical 7/backend"
+          else
+            cd backend
+          fi
+          npm test
+
+      - name: 📦 Install Frontend Dependencies (npm install)
+        run: |
+          echo "==============================================="
+          echo "📦 STEP 3: Installing Frontend Dependencies"
+          echo "==============================================="
+          if [ -d "Practical 7/frontend" ]; then
+            cd "Practical 7/frontend"
+          else
+            cd frontend
+          fi
+          npm install
+
+      - name: 🏗️ Build Frontend Production Bundle (npm run build)
+        run: |
+          echo "==============================================="
+          echo "🏗️ STEP 4: Building Frontend for Production"
+          echo "==============================================="
+          if [ -d "Practical 7/frontend" ]; then
+            cd "Practical 7/frontend"
+          else
+            cd frontend
+          fi
+          npm run build
+
+  deploy:
+    name: Continuous Deployment (CD)
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: 📥 Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Simulate Automated Deployment
+        run: |
+          echo "=========================================================="
+          echo "🚀 STEP 5: Automated Deployment Triggered"
+          echo "=========================================================="
+          echo "✅ All automated tests PASSED!"
+          echo "✅ Frontend production build PASSED!"
+          echo "🚀 Deploying Task Management Application to Production..."
+          echo "🌐 Environment: Production (Dockerized Stack)"
+          echo "🎉 Deployment completed successfully!"

@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
+    "test": "node --test",
     "benchmark": "node benchmark.js",
     "demo:events": "node demo-events.js"
   },
