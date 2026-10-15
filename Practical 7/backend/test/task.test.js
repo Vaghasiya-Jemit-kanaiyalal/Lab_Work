@@ -165,15 +165,15 @@ describe('Task Management Application - Automated Test Suite', () => {
     });
   });
 
-  describe('CI/CD Pipeline Demonstration - Intentional Failure Mode', () => {
-    it('DELIBERATELY BROKEN TEST: intentional failure to demonstrate CI/CD pipeline red status', () => {
+  describe('CI/CD Pipeline Demonstration - Fixed Test Mode', () => {
+    it('FIXED TEST: asserts valid status code and confirms pipeline health', () => {
       const expectedStatus = 200;
-      const actualStatus = 500;
-      // This assertion is intentionally designed to fail
+      const actualStatus = 200;
+      // Fixed assertion confirming expected 200 OK status
       assert.strictEqual(
         actualStatus,
         expectedStatus,
-        'DELIBERATE CI/CD DEMO FAILURE: Server returned 500 but test expected 200. This deliberately breaks the pipeline.'
+        'FIXED CI/CD DEMO TEST: Server returned expected status 200. Pipeline test passes!'
       );
     });
   });
